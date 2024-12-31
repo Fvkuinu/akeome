@@ -1,0 +1,78 @@
+/* リセットCSS（簡易版） */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+header, footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+main {
+    margin: 20px 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    position: relative; /* 相対位置を設定 */
+}
+
+.column {
+    background-color: #fff;
+    padding: 20px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    width: 250px;
+    position: relative;
+}
+
+#left-column {
+    top: 50px; /* 左列を下にずらす */
+}
+
+.column h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.sortable-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-height: 200px;
+}
+
+.sortable-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: move;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.sortable-item:hover {
+    background-color: #45a049;
+}
+
+.sortable-item.sortable-ghost {
+    opacity: 0.4;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+}

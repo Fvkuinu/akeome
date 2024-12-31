@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortableJS with Tailwind CSS デモ</title>
+    <!-- Tailwind CSSのCDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SortableJSのCDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <!-- Particles.jsのCDN -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link rel="stylesheet" href="css/textStyle.css">
+    <link rel="stylesheet" href="css/animationStyle.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+    <script defer src="js/animation.js"></script>
+    <script defer src="js/app.js"></script>
+    <script defer src="js/sakura.js"></script>
+    <style>
+        /* カスタムプロパティを使用して動的にサイズを設定 */
+        :root {
+            --item-margin: 1rem;
+            --viewport-height: 100vh;
+            --main-padding: 5rem;
+            --total-margin: calc(var(--item-margin) * 9 + var(--main-padding) * 2);
+            --item-height: calc((var(--viewport-height) - var(--total-margin)) / 10);
+        }
+
+        /* 各アイテムにカスタムプロパティを適用 */
+        .sortable-item {
+            height: var(--item-height);
+            width: var(--item-height);
+        }
+
+        /* 追加: Glowアニメーションの定義 */
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        /* Glowクラスの定義 */
+        .glow {
+            animation: glow 1s ease-in-out infinite;
+        }
+
+        /* 初期状態でnew-contentを非表示に */
+        #new-content {
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        /* フェードアウト用 */
+        .fade-out {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        /* フェード-in用 */
+        .fade-in {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s ease;
+        }
+    </style>
+</head>
+
+<body class="text-gray-100">
+    <div id="current-content">
+        <!-- パーティクル用のコンテナ -->
+        <div id="particles-js" class="fixed top-0 left-0 w-full h-full z-0"></div>
+
+        <div class="flex flex-col justify-center items-center min-h-screen relative z-10 p-4">
+            <!-- 追加: 見出しテキスト -->
+            <h1 class="text-2xl font-bold mb-6">正しく並び変えろ</h1>
+
+            <div id="sortable-container" class="p-4 rounded max-w-xs w-full">
+                <!-- 10個の正方形アイテムに data-id を追加 -->
+                <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="1">あ</div>
+                    <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="3">ま</div>
+                    <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="9">と</div>
+                
+                <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="4">し</div>
+                <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="5">て</div>
+                    <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="6">お</div>
+                    <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="2">け</div>
+                
+                    <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="8">で</div>
+                <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="7">め</div>
+                
+                
+                <div class="sortable-item bg-green-500 text-white flex items-center justify-center mb-4 rounded cursor-move hover:bg-green-600 mx-auto"
+                    data-id="10">う</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 目標のコンテンツ -->
+    <div id="new-content">
+        <!-- ここに目標のHTMLを挿入します -->
+        <!-- 親要素(キャンバス) -->
+        <div class="canvas">
+            <!-- アニメーション中央からの登場 -->
+            <div class="animated-element center" style="top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        width: 0; height: 0;">
+            </div>
+            <!-- アニメーション上下左右の登場 -->
+            <div class="animated-element" style="bottom: 0; left: 0;
+                        width: 0; height: 0;">
+            </div>
+
+            <div class="center-text text-7xl lg:text-9xl">
+                謹賀新年<br>2025<br>
+                <span class="default-text">&copy; 2025 Fvkuinu</span>
+            </div>
+
+            <!-- 背景 -->
+            <div class="" style="top: 0; left: 0;
+                        width: 100vw; height: 100vh;">
+                <img src="img/background.png" style="width: 100%; height:100%">
+            </div>
+            <!-- 桜吹雪 -->
+            <div class="" id="sakuraContainer" style="top: 0; left: 0;
+                        width: 100vw; height: 100vh;
+                        z-index: 45;
+                        position: absolute;">
+            </div>
+            <!-- 富士山 -->
+            <div class="animated-element hujisan" style="bottom: max(-120vw,-120vh); left: max(-10vw,-10vh);
+                        width: min(100vw,100vh); height: min(100vw,100vh);
+                        z-index: 30;">
+                <img src="img/どっしりとした富士山のアイコン.svg" alt="富士山">
+            </div>
+            <!-- 太陽 -->
+            <div class="animated-element sun" style="bottom: max(-30vw,-30vh); right: min(10vw, 10vh);
+                        width: min(60vw, 60vh); height: min(60vw, 60vh);
+                        z-index: 10;">
+                <img src="img/太陽アイコン.svg" alt="太陽">
+            </div>
+            <!-- 和風雲二段 -->
+            <div class="animated-element kumo1" style="bottom: max(-20vw,-20vh); left: 80vw;
+                        width: min(90vw,90vh); height: min(40vw,40vh);
+                        z-index: 40;">
+                <img src="img/和風のくものアイコン.svg" alt="和風雲1">
+            </div>
+            <!-- 和風雲三段 -->
+            <div class="animated-element kumo2" style="bottom: max(-40vw,-40vh); left: 90vw;
+                        width: min(60vw,60vh); height: min(40vw,40vh);
+                        z-index: 20;">
+                <img src="img/和風の雲のアイコン.svg" alt="和風雲2">
+            </div>
+            <!-- 門松 -->
+            <div class="animated-element hujisan" style="bottom: max(-28vw,-28vh); right: min(0vw, 0vh);
+                        width: min(25vw, 25vh); height: min(25vw, 25vh);
+                        z-index: 41;">
+                <img src="img/門松のフリーイラスト.svg" alt="門松">
+            </div>
+            <!-- 凧 -->
+            <div class="animated-element tako" style="top: min(23vw,23vh); left: min(5vw,5vh);
+                        width: min(25vw, 25vh); height: min(25vw, 25vh);
+                        z-index: 41;">
+                <img src="img/凧アイコン1.svg" alt="凧">
+            </div>
+            <!-- 桜花びら赤 -->
+            <div class="animated-element hujisan" style="top: min(27vw,27vh); right: min(5vw,5vh);
+                        width: min(25vw, 25vh); height: min(25vw, 25vh);
+                        z-index: 41;">
+                <img src="img/桜の花びらのアイコン素材　その2.svg" alt="桜花びら赤">
+            </div>
+            <!-- 桜花びらオレンジ -->
+            <div class="animated-element hujisan" style="top: min(43vw,43vh); right: min(2vw,2vh);
+                        width: min(18vw, 18vh); height: min(18vw, 18vh);
+                        z-index: 41;">
+                <img src="img/桜の花びらのアイコン素材　その2 (1).svg" alt="桜花びらオレンジ">
+            </div>
+            <!-- 桜花びら黄色 -->
+            <div class="animated-element hujisan" style="top: min(31vw,31vh); right: min(2vw,2vh);
+                        width: min(12vw, 12vh); height: min(12vw, 12vh);
+                        z-index: 41;">
+                <img src="img/桜の花びらの無料アイコン素材 (1).svg" alt="桜花びら黄色">
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+/* 既存のスタイル */
+
+/* フォントの読み込み */
+@font-face {
+    font-family: 'tamanegi';
+    src: url('../fonts/玉ねぎ楷書激無料版v7改.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 画面中央のテキスト */
+.center-text {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5em;
+    /* フォントサイズを調整 */
+    color: #171717;
+    /* テキストカラーを設定 */
+    font-family: 'tamanegi', sans-serif;
+    /* カスタムフォントを適用 */
+    text-align: center;
+    z-index: 50;
+    /* 他の要素より前面に表示 */
+}
+
+.default-text{
+    font-family: Georgia, serif;
+    font-size: 0.16em;
+}
